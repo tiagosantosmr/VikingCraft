@@ -1,0 +1,7 @@
+name: VikingCraft
+version: '${project.version}'
+main: me.xdragon.vikingcraft.Main
+api-version: 1.17
+authors: [ xDraGon ]
+description: Core plugin for the VikingCraft Minecraft server
+website: https://github.com/xDraGonGamer
