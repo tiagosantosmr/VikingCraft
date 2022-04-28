@@ -25,7 +25,9 @@ public class KillCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
-        if(sender.hasPermission("killperm") || !(sender instanceof Player)) {
+        System.out.println("boa tarde");
+        if(sender.hasPermission("vikingcraft.admin") || !(sender instanceof Player)) {
+            System.out.println("boa tarde1");
             if(args.length == 0) {
                 sender.sendMessage(Utils.Chat(tag + "/kill <all, custom, living, self>"));
             }else if(args.length == 1) {

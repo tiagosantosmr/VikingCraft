@@ -3,15 +3,17 @@ package me.xdragon.vikingcraft.Listeners;
 import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
 import me.xdragon.vikingcraft.Utils.statNames;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import me.xdragon.vikingcurrency.CurrencyManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -20,8 +22,6 @@ import org.bukkit.util.Vector;
 import java.util.EnumMap;
 
 public class EntityDamageByEntityListener implements Listener {
-
-    public me.xDraGon.CurrencyModule.Main currencymanager;
     String tag = "&a&l[Bank]&a: ";
 
     public EntityDamageByEntityListener(Main plugin) {
@@ -47,7 +47,7 @@ public class EntityDamageByEntityListener implements Listener {
                 Player opp = (Player) e.getDamager();
                 EnumMap<statNames, Double> attackerStats = Main.playerStats.getStats(opp.getUniqueId());
                 ItemStack attackerItem = opp.getInventory().getItemInMainHand();
-                if(attackerItem != null && attackerItem.hasItemMeta() && attackerItem.getItemMeta().getPersistentDataContainer() != null) {//se o item de ataque e valido
+                if(attackerItem.getType() == Material.AIR && attackerItem.hasItemMeta() && !attackerItem.getItemMeta().getPersistentDataContainer().isEmpty()) {//se o item de ataque e valido
                     PersistentDataContainer container = attackerItem.getItemMeta().getPersistentDataContainer();
                     NamespacedKey keyattack = new NamespacedKey(plugin, "attackdmg");
                     if(container.has(keyattack, PersistentDataType.DOUBLE)) { //vamos buscar as tags
@@ -65,11 +65,11 @@ public class EntityDamageByEntityListener implements Listener {
                 }
                 damage *= armor;
                 if(health - damage <= 0) { //se a vitima morre
-                    CurrencyManager currency = new CurrencyManager(currencymanager);
-                    currency.removeCurrency(victim, 1000);
-                    currency.addCurrency(opp, 1000);
-                    victim.sendMessage(Utils.Chat("&cYou have been killed by") + opp.getDisplayName() + "\n" + tag + "&4Hospital fees- 1000$");
-                    opp.sendMessage(tag + "&cYou have been awarded 1000$ for killing &b" + victim.getDisplayName());
+                    CurrencyManager currency = new CurrencyManager();
+                    currency.removeCurrency(victim.getUniqueId(), 1000, false);
+                    currency.addCurrency(opp.getUniqueId(), 1000);
+                    victim.sendMessage(Utils.Chat("&cYou have been killed by") + opp.displayName() + "\n" + tag + "&4Hospital fees- 1000$");
+                    opp.sendMessage(tag + "&cYou have been awarded 1000$ for killing &b" + victim.displayName());
                     final Vector vec = new Vector(0, 0, 0);
                     victim.setVelocity(vec);
                     victim.setFoodLevel(20);
@@ -79,12 +79,12 @@ public class EntityDamageByEntityListener implements Listener {
                     victim.teleport(loc);
                     victimStats.put(statNames.HEALTH, victimStats.get(statNames.MAXHEALTH));
                     Main.playerStats.setStats(victim.getUniqueId(), victimStats);
-                    victim.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.Chat("&c" + String.valueOf(Math.ceil(victimStats.get(statNames.MAXHEALTH))) + " ❤")));
+                    victim.sendActionBar(Component.text(Utils.Chat("&c" + Math.ceil(victimStats.get(statNames.MAXHEALTH))) + " ❤"));
                     return;
                 }else {
                     victimStats.put(statNames.HEALTH, health - damage);
                     Main.playerStats.setStats(victim.getUniqueId(), victimStats);
-                    victim.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.Chat("&c" + String.valueOf(Math.ceil(health - damage)) + " ❤")));
+                    victim.sendActionBar(Component.text(Utils.Chat("&c" + Math.ceil(health - damage)) + " ❤"));
                     return;
                 }
 
@@ -105,14 +105,14 @@ public class EntityDamageByEntityListener implements Listener {
             //Bomber attacker = (Bomber) e.getDamager();
             //damage = attacker.attack() * 100 / (victimStats.get(statNames.ARMOR) + 100);
             //}
-            if(e.getCause().equals(DamageCause.ENTITY_SWEEP_ATTACK)) {
+            if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
                 damage *= 0.5;
             }
             damage *= armor;
             if(health - damage <= 0) { //se a vitima morre
-                CurrencyManager currency = new CurrencyManager(currencymanager);
-                currency.removeCurrency(victim, 1000);
-                victim.sendMessage(Utils.Chat(tag + "&4Hospital fees- 1000$"));
+                CurrencyManager currency = new CurrencyManager();
+                currency.removeCurrency(victim.getUniqueId(), 1000, false);
+                victim.sendMessage(Utils.Chat(tag + "&Recovery fees- " + Math.max(currency.getCurrency(victim.getUniqueId()), 0)) + "$");
                 final Vector vec = new Vector(0, 0, 0);
                 victim.setVelocity(vec);
                 victim.setFoodLevel(20);
@@ -122,11 +122,9 @@ public class EntityDamageByEntityListener implements Listener {
                 victim.teleport(loc);
                 victimStats.put(statNames.HEALTH, victimStats.get(statNames.MAXHEALTH));
                 Main.playerStats.setStats(victim.getUniqueId(), victimStats);
-                return;
             }else {
                 victimStats.put(statNames.HEALTH, health - damage);
                 Main.playerStats.setStats(victim.getUniqueId(), victimStats);
-                return;
             }
         }else {//se quem recebe dano nao e player
             e.setDamage(0.0d);
@@ -139,7 +137,7 @@ public class EntityDamageByEntityListener implements Listener {
                 damage = attackerStats.get(statNames.ATTACKDMG);
                 Double critdmg = attackerStats.get(statNames.CRITDMG), critrate = attackerStats.get(statNames.CRITCHANCE);
                 ItemStack weapon = attacker.getInventory().getItemInMainHand();
-                if(weapon != null && weapon.hasItemMeta() && weapon.getItemMeta().getPersistentDataContainer() != null) {//se for ataque valido
+                if(weapon.getType() == Material.AIR && weapon.hasItemMeta() && !weapon.getItemMeta().getPersistentDataContainer().isEmpty()) {//se for ataque valido
                     PersistentDataContainer container = weapon.getItemMeta().getPersistentDataContainer();
                     NamespacedKey keyattack = new NamespacedKey(plugin, "attackdmg");
                     if(container.has(keyattack, PersistentDataType.DOUBLE)) { //vamos buscar as tags
@@ -167,7 +165,7 @@ public class EntityDamageByEntityListener implements Listener {
                     ammount = 200;
                 }
             }
-            if(e.getCause().equals(DamageCause.ENTITY_SWEEP_ATTACK)) {
+            if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
                 damage *= 0.5;
             }
             LivingEntity entity = (LivingEntity) e.getEntity();
@@ -178,7 +176,7 @@ public class EntityDamageByEntityListener implements Listener {
             Double healthvalue = container.get(healthkey, PersistentDataType.DOUBLE);
             if(damage >= healthvalue) {
                 if(attacker != null) {
-                    if(e.getEntity().getPersistentDataContainer() != null) {
+                    if(!e.getEntity().getPersistentDataContainer().isEmpty()) {
                         NamespacedKey levelkey = new NamespacedKey(plugin, "level");
                         int level = e.getEntity().getPersistentDataContainer().get(levelkey, PersistentDataType.INTEGER);
                         switch(e.getEntityType()) {
@@ -201,15 +199,14 @@ public class EntityDamageByEntityListener implements Listener {
                         attacker.sendMessage(String.valueOf(Main.playerStats.getStat(attacker.getUniqueId(), statNames.XP)));
                         attacker.setLevel((int)Math.round(Math.log(Main.playerStats.getStat(attacker.getUniqueId(), statNames.XP))));
                     }
-                    CurrencyManager currency = new CurrencyManager(currencymanager);
-                    currency.addCurrency(attacker, ammount);
+                    CurrencyManager currency = new CurrencyManager();
+                    currency.addCurrency(attacker.getUniqueId(), ammount);
                 }
                 entity.setHealth(0.0d);
                 return;
             }
             container.set(healthkey, PersistentDataType.DOUBLE, healthvalue - damage);
             entity.setCustomName(Utils.Chat(name + " &4" + Math.ceil(healthvalue - damage)));
-            return;
         }
     }
 }

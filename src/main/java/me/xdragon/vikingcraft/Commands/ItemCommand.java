@@ -2,6 +2,8 @@ package me.xdragon.vikingcraft.Commands;
 
 import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
+import net.kyori.adventure.text.Component;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -69,7 +71,7 @@ public class ItemCommand implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
         System.out.println("ola");
-        if(sender instanceof Player && sender.hasPermission("itemperm")) {
+        if(sender instanceof Player && sender.hasPermission("vikingcraft.admin")) {
             Player player = (Player) sender;
 
             if(args.length < 4) {
@@ -77,7 +79,7 @@ public class ItemCommand implements CommandExecutor {
                 return true;
             }
 
-            if(args[0].equals("sword")) {
+            if(args[0].equalsIgnoreCase("sword")) {
                 System.out.println("ola");
                 System.out.println(args[1]);
                 ItemStack sword = new ItemStack(swords.get(args[1].toLowerCase()));
@@ -85,24 +87,24 @@ public class ItemCommand implements CommandExecutor {
                 ItemMeta meta = sword.getItemMeta();
                 meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                 System.out.println("ola1");
-                List<String> lore = new ArrayList<String>();
-                lore.add(Utils.Chat("&b&lViking&6&lCraft"));
-                lore.add(Utils.Chat("&cAttack Damage- " + args[2]));
-                lore.add(Utils.Chat("&4Critical Damage- " + args[3] + "%"));
-                lore.add(Utils.Chat("&4Critical Chance- " + args[4] + "%"));
+                List<Component> lore = new ArrayList<Component>();
+                lore.add(Component.text(Utils.Chat("&b&lViking&6&lCraft")));
+                lore.add(Component.text(Utils.Chat("&cAttack Damage- " + args[2])));
+                lore.add(Component.text(Utils.Chat("&4Critical Damage- " + args[3] + "%")));
+                lore.add(Component.text(Utils.Chat("&4Critical Chance- " + args[4] + "%")));
                 System.out.println("ola2");
                 NamespacedKey attackDamage = new NamespacedKey(plugin, "attackdmg");
                 NamespacedKey critdmg = new NamespacedKey(plugin, "critdmg");
                 NamespacedKey critchance = new NamespacedKey(plugin, "critchance");
                 System.out.println("ola3");
-                meta.setLore(lore);
+                meta.lore(lore);
                 PersistentDataContainer container = meta.getPersistentDataContainer();
                 container.set(attackDamage, PersistentDataType.DOUBLE, Double.valueOf(args[2]));
                 container.set(critdmg, PersistentDataType.DOUBLE, Double.valueOf(args[3]) / 100);
                 container.set(critchance, PersistentDataType.DOUBLE, Double.valueOf(args[4]) / 100);
                 System.out.println("ola4");
                 if(args.length >= 6) {
-                    meta.setDisplayName(Utils.Chat(args[5]));
+                    meta.displayName(Component.text(Utils.Chat(args[5])));
                 }
                 System.out.println("ola");
                 sword.setItemMeta(meta);
@@ -113,21 +115,21 @@ public class ItemCommand implements CommandExecutor {
                 ItemStack helmet = new ItemStack(helmets.get(args[1].toLowerCase()));
                 ItemMeta meta = helmet.getItemMeta();
                 meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                List<String> lore = new ArrayList<String>();
-                lore.add(Utils.Chat("&b&lViking&6&lCraft"));
-                lore.add(Utils.Chat("&aHealth- +" + args[2]));
-                lore.add(Utils.Chat("&6Armor- +" + args[3]));
-                lore.add(Utils.Chat("&5Magic Resistance- +" + args[4]));
+                List<Component> lore = new ArrayList<Component>();
+                lore.add(Component.text(Utils.Chat("&b&lViking&6&lCraft")));
+                lore.add(Component.text(Utils.Chat("&aHealth- +" + args[2])));
+                lore.add(Component.text(Utils.Chat("&6Armor- +" + args[3])));
+                lore.add(Component.text(Utils.Chat("&5Magic Resistance- +" + args[4])));
                 NamespacedKey maxHealth = new NamespacedKey(plugin, "health");
                 NamespacedKey armor = new NamespacedKey(plugin, "armor");
                 NamespacedKey magicRes = new NamespacedKey(plugin, "magicres");
-                meta.setLore(lore);
+                meta.lore(lore);
                 PersistentDataContainer container = meta.getPersistentDataContainer();
                 container.set(maxHealth, PersistentDataType.DOUBLE, Double.valueOf(args[2]));
                 container.set(armor, PersistentDataType.DOUBLE, Double.valueOf(args[3]));
                 container.set(magicRes, PersistentDataType.DOUBLE, Double.valueOf(args[4]));
                 if(args.length >= 6) {
-                    meta.setDisplayName(Utils.Chat(args[5]));
+                    meta.displayName(Component.text(Utils.Chat(args[5])));
                 }
                 helmet.setItemMeta(meta);
                 player.getInventory().addItem(helmet);
@@ -136,21 +138,21 @@ public class ItemCommand implements CommandExecutor {
                 ItemStack chestplate = new ItemStack(chestplates.get(args[1].toLowerCase()));
                 ItemMeta meta = chestplate.getItemMeta();
                 meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                List<String> lore = new ArrayList<String>();
-                lore.add(Utils.Chat("&b&lViking&6&lCraft"));
-                lore.add(Utils.Chat("&aHealth- +" + args[2]));
-                lore.add(Utils.Chat("&6Armor- +" + args[3]));
-                lore.add(Utils.Chat("&5Magic Resistance- +" + args[4]));
+                List<Component> lore = new ArrayList<Component>();
+                lore.add(Component.text(Utils.Chat("&b&lViking&6&lCraft")));
+                lore.add(Component.text(Utils.Chat("&aHealth- +" + args[2])));
+                lore.add(Component.text(Utils.Chat("&6Armor- +" + args[3])));
+                lore.add(Component.text(Utils.Chat("&5Magic Resistance- +" + args[4])));
                 NamespacedKey maxHealth = new NamespacedKey(plugin, "health");
                 NamespacedKey armor = new NamespacedKey(plugin, "armor");
                 NamespacedKey magicRes = new NamespacedKey(plugin, "magicres");
-                meta.setLore(lore);
+                meta.lore(lore);
                 PersistentDataContainer container = meta.getPersistentDataContainer();
                 container.set(maxHealth, PersistentDataType.DOUBLE, Double.valueOf(args[2]));
                 container.set(armor, PersistentDataType.DOUBLE, Double.valueOf(args[3]));
                 container.set(magicRes, PersistentDataType.DOUBLE, Double.valueOf(args[4]));
                 if(args.length >= 6) {
-                    meta.setDisplayName(Utils.Chat(args[5]));
+                    meta.displayName(Component.text(Utils.Chat(args[5])));
                 }
                 chestplate.setItemMeta(meta);
                 player.getInventory().addItem(chestplate);
@@ -159,21 +161,21 @@ public class ItemCommand implements CommandExecutor {
                 ItemStack leggings = new ItemStack(legging.get(args[1].toLowerCase()));
                 ItemMeta meta = leggings.getItemMeta();
                 meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                List<String> lore = new ArrayList<String>();
-                lore.add(Utils.Chat("&b&lViking&6&lCraft"));
-                lore.add(Utils.Chat("&aHealth- +" + args[2]));
-                lore.add(Utils.Chat("&6Armor- +" + args[3]));
-                lore.add(Utils.Chat("&5Magic Resistance- +" + args[4]));
+                List<Component> lore = new ArrayList<Component>();
+                lore.add(Component.text(Utils.Chat("&b&lViking&6&lCraft")));
+                lore.add(Component.text(Utils.Chat("&aHealth- +" + args[2])));
+                lore.add(Component.text(Utils.Chat("&6Armor- +" + args[3])));
+                lore.add(Component.text(Utils.Chat("&5Magic Resistance- +" + args[4])));
                 NamespacedKey maxHealth = new NamespacedKey(plugin, "health");
                 NamespacedKey armor = new NamespacedKey(plugin, "armor");
                 NamespacedKey magicRes = new NamespacedKey(plugin, "magicres");
-                meta.setLore(lore);
+                meta.lore(lore);
                 PersistentDataContainer container = meta.getPersistentDataContainer();
                 container.set(maxHealth, PersistentDataType.DOUBLE, Double.valueOf(args[2]));
                 container.set(armor, PersistentDataType.DOUBLE, Double.valueOf(args[3]));
                 container.set(magicRes, PersistentDataType.DOUBLE, Double.valueOf(args[4]));
                 if(args.length >= 6) {
-                    meta.setDisplayName(Utils.Chat(args[5]));
+                    meta.displayName(Component.text(Utils.Chat(args[5])));
                 }
                 leggings.setItemMeta(meta);
                 player.getInventory().addItem(leggings);
@@ -182,21 +184,21 @@ public class ItemCommand implements CommandExecutor {
                 ItemStack boots = new ItemStack(boot.get(args[1].toLowerCase()));
                 ItemMeta meta = boots.getItemMeta();
                 meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                List<String> lore = new ArrayList<String>();
-                lore.add(Utils.Chat("&b&lViking&6&lCraft"));
-                lore.add(Utils.Chat("&aHealth- +" + args[2]));
-                lore.add(Utils.Chat("&6Armor- +" + args[3]));
-                lore.add(Utils.Chat("&5Magic Resistance- +" + args[4]));
+                List<Component> lore = new ArrayList<Component>();
+                lore.add(Component.text(Utils.Chat("&b&lViking&6&lCraft")));
+                lore.add(Component.text(Utils.Chat("&aHealth- +" + args[2])));
+                lore.add(Component.text(Utils.Chat("&6Armor- +" + args[3])));
+                lore.add(Component.text(Utils.Chat("&5Magic Resistance- +" + args[4])));
                 NamespacedKey maxHealth = new NamespacedKey(plugin, "health");
                 NamespacedKey armor = new NamespacedKey(plugin, "armor");
                 NamespacedKey magicRes = new NamespacedKey(plugin, "magicres");
-                meta.setLore(lore);
+                meta.lore(lore);
                 PersistentDataContainer container = meta.getPersistentDataContainer();
                 container.set(maxHealth, PersistentDataType.DOUBLE, Double.valueOf(args[2]));
                 container.set(armor, PersistentDataType.DOUBLE, Double.valueOf(args[3]));
                 container.set(magicRes, PersistentDataType.DOUBLE, Double.valueOf(args[4]));
                 if(args.length >= 6) {
-                    meta.setDisplayName(Utils.Chat(args[5]));
+                    meta.displayName(Component.text(Utils.Chat(args[5])));
                 }
                 boots.setItemMeta(meta);
                 player.getInventory().addItem(boots);
@@ -204,6 +206,7 @@ public class ItemCommand implements CommandExecutor {
             }
             return false;
         }else {
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have permission to run this command."));
             return false;
         }
     }

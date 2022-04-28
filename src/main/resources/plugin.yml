@@ -5,3 +5,19 @@ api-version: 1.17
 authors: [ xDraGon ]
 description: Core plugin for the VikingCraft Minecraft server
 website: https://github.com/xDraGonGamer
+depend: [VikingCurrency]
+commands:
+  container:
+    description: Command used add container fields to item metas
+  kill:
+    description: Command used to kill entities
+  enchant:
+    description: Command used to enchant items
+  heal:
+    description: Command used to heal players
+  item:
+    description: Command used to spawn VikingCraft items
+  lore:
+    description: Command used to alter an item's lore
+  registerstats:
+    description: Command to register the current players stats (for heavy debugging)

@@ -21,7 +21,7 @@ public class ContainerCommand implements CommandExecutor {
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
-        if(sender instanceof Player && sender.hasPermission("containperm")) {
+        if(sender instanceof Player && sender.hasPermission("vikingcraft.admin")) {
 
             if(args.length == 1) {
                 Player player = (Player) sender;

@@ -1,11 +1,10 @@
 package me.xdragon.vikingcraft.Listeners;
 
-import com.codingforcookies.armorequip.ArmorEquipEvent;
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
 import me.xdragon.vikingcraft.Utils.statNames;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -24,10 +23,10 @@ public class ArmorEquipListener implements Listener {
     }
 
     @EventHandler
-    public void onArmorEquip(ArmorEquipEvent e) {
+    public void onArmorEquip(PlayerArmorChangeEvent e) {
 
-        ItemStack oldPiece = e.getOldArmorPiece();
-        ItemStack newPiece = e.getNewArmorPiece();
+        ItemStack oldPiece = e.getOldItem();
+        ItemStack newPiece = e.getNewItem();
 
         if(oldPiece == null || oldPiece.getType() == Material.AIR) {//se a antiga era vazia
             if(newPiece == null || newPiece.getType() == Material.AIR) {//se a nova era vazia
@@ -35,7 +34,7 @@ public class ArmorEquipListener implements Listener {
             }else { //se equipa armadura
                 Double armor = 0.0d, magicres = 0.0d, health = 0.0d;
                 NamespacedKey armorkey = new NamespacedKey(Main.getPlugin(Main.class), "armor");
-                if(newPiece.hasItemMeta() && newPiece.getItemMeta().getPersistentDataContainer() != null && newPiece.getItemMeta().getPersistentDataContainer().has(armorkey, PersistentDataType.DOUBLE)) { //se e armadura valida
+                if(newPiece.hasItemMeta() && !newPiece.getItemMeta().getPersistentDataContainer().isEmpty() && newPiece.getItemMeta().getPersistentDataContainer().has(armorkey, PersistentDataType.DOUBLE)) { //se e armadura valida
                     NamespacedKey magicreskey = new NamespacedKey(Main.getPlugin(Main.class), "magicres");
                     NamespacedKey healthkey = new NamespacedKey(Main.getPlugin(Main.class), "health");
                     PersistentDataContainer container = newPiece.getItemMeta().getPersistentDataContainer();
@@ -52,6 +51,7 @@ public class ArmorEquipListener implements Listener {
                 stats.put(statNames.MAXHEALTH, stats.get(statNames.MAXHEALTH) + health);
                 Main.playerStats.setStats(e.getPlayer().getUniqueId(), stats);
                 Utils.updateScoreboard(e.getPlayer());
+                e.getPlayer().sendMessage(Main.playerStats.getStats(e.getPlayer().getUniqueId()).toString());
             }
 
         }else {//se a antiga nao era vazia
@@ -66,7 +66,7 @@ public class ArmorEquipListener implements Listener {
                 oldhealth = container.get(healthkey, PersistentDataType.DOUBLE);
             }
             if(newPiece != null && newPiece.getType() != Material.AIR) {
-                if(newPiece.hasItemMeta() && newPiece.getItemMeta().getPersistentDataContainer() != null && newPiece.getItemMeta().getPersistentDataContainer().has(armorkey, PersistentDataType.DOUBLE)) {
+                if(newPiece.hasItemMeta() && !newPiece.getItemMeta().getPersistentDataContainer().isEmpty() && newPiece.getItemMeta().getPersistentDataContainer().has(armorkey, PersistentDataType.DOUBLE)) {
                     NamespacedKey magicreskey = new NamespacedKey(Main.getPlugin(Main.class), "magicres");
                     NamespacedKey healthkey = new NamespacedKey(Main.getPlugin(Main.class), "health");
                     PersistentDataContainer container = oldPiece.getItemMeta().getPersistentDataContainer();
@@ -82,7 +82,7 @@ public class ArmorEquipListener implements Listener {
             stats.put(statNames.MAXHEALTH, stats.get(statNames.MAXHEALTH) + newhealth - oldhealth);
             if(stats.get(statNames.HEALTH) > stats.get(statNames.MAXHEALTH)) {
                 stats.put(statNames.HEALTH, stats.get(statNames.MAXHEALTH));
-                e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.Chat("&c" + String.valueOf(Math.ceil(stats.get(statNames.MAXHEALTH))) + " ❤")));
+                e.getPlayer().sendActionBar(Component.text((Utils.Chat("&c" + String.valueOf(Math.ceil(stats.get(statNames.MAXHEALTH))) + " ❤"))));
             }
             Main.playerStats.setStats(e.getPlayer().getUniqueId(), stats);
             Utils.updateScoreboard(e.getPlayer());

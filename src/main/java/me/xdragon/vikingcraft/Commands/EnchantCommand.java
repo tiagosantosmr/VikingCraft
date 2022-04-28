@@ -2,6 +2,8 @@ package me.xdragon.vikingcraft.Commands;
 
 import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -112,7 +114,7 @@ public class EnchantCommand implements CommandExecutor {
             }else if(args.length == 1) {
                 sender.sendMessage(Utils.Chat(tag + "&c/enchant <enchantment> <level>"));
             }else if(args.length == 2) {
-                if(((Player)sender).getInventory().getItemInMainHand() == null) {
+                if(((Player)sender).getInventory().getItemInMainHand().getType() == Material.AIR) {
                     sender.sendMessage(Utils.Chat(tag + "&cYou must have an item in your hand to be able to use this command"));
                     return false;
                 }else { // se tem item na mao
@@ -127,31 +129,31 @@ public class EnchantCommand implements CommandExecutor {
                     if(encantamentos.get(args[0].toLowerCase()) != null) { //se args[0] e um encantamento valido
                         Player player = (Player) sender;
                         ItemStack item = player.getInventory().getItemInMainHand();
-                        if(!item.hasItemMeta() || !item.getItemMeta().getLore().contains(Utils.Chat("&b&lViking&6&lCraft"))) {
-                            List<String> lore = new ArrayList<String>();
-                            lore.add(Utils.Chat("&cVikingCraft"));
+                        if(!item.hasItemMeta() || !item.getItemMeta().lore().contains(Utils.Chat("&b&lViking&6&lCraft"))) {
+                            List<Component> lore = new ArrayList<Component>();
+                            lore.add(Component.text(Utils.Chat("&cVikingCraft")));
                             item.setItemMeta(null);
                             ItemMeta meta = item.getItemMeta();
-                            meta.setLore(lore);
+                            meta.lore(lore);
                             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                             item.setItemMeta(meta);
                         }
                         int valor = Integer.parseInt(args[1]);
-                        List<String> lore = item.getItemMeta().getLore();
+                        List<Component> lore = item.getItemMeta().lore();
                         if(item.containsEnchantment(encantamentos.get(args[0].toLowerCase()))) { //se ja contem o encantamento
-                            int index = Utils.findIndexOfContains(lore, args[0]);
+                            int index = Utils.findLoreIndexOfContains(lore, args[0]);
                             item.addUnsafeEnchantment(encantamentos.get(args[0].toLowerCase()), valor);
                             ItemMeta meta = item.getItemMeta();
                             if(valor == 0) {
                                 lore.remove(index);
-                                meta.setLore(lore);
+                                meta.lore(lore);
                                 item.setItemMeta(meta);
                                 item.removeEnchantment(encantamentos.get(args[0].toLowerCase()));
                                 return true;
                             }
-                            lore.set(index, Utils.Chat(nomes.get(args[0].toLowerCase()) + " " + Utils.toRoman(valor)));
-                            meta.setLore(lore);
+                            lore.set(index, Component.text(Utils.Chat(nomes.get(args[0].toLowerCase()) + " " + Utils.toRoman(valor))));
+                            meta.lore(lore);
                             item.setItemMeta(meta);
                             return true;
                         }else { //se nao tem encantamento
@@ -159,10 +161,10 @@ public class EnchantCommand implements CommandExecutor {
                                 sender.sendMessage(Utils.Chat(tag + "&cNao contem o encantamento"));
                                 return false;
                             }
-                            lore.add(Utils.Chat(nomes.get(args[0].toLowerCase()) + " " + Utils.toRoman(valor)));
+                            lore.add(Component.text(Utils.Chat(nomes.get(args[0].toLowerCase()) + " " + Utils.toRoman(valor))));
                             item.addUnsafeEnchantment(encantamentos.get(args[0].toLowerCase()), valor);
                             ItemMeta meta = item.getItemMeta();
-                            meta.setLore(lore);
+                            meta.lore(lore);
                             item.setItemMeta(meta);
                             return true;
                         }

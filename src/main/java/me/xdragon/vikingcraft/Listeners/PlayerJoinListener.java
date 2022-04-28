@@ -3,6 +3,7 @@ package me.xdragon.vikingcraft.Listeners;
 import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
 import me.xdragon.vikingcraft.Utils.statNames;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -26,7 +27,7 @@ public class PlayerJoinListener implements Listener {
             Main.playerStats.addPlayer(player.getUniqueId());
         }
         Utils.updateScoreboard(player);
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.Chat("&c" + String.valueOf(Main.playerStats.getStat(player.getUniqueId(), statNames.HEALTH)) + " ❤")));
+        player.sendActionBar(Component.text(Utils.Chat("&c" + String.valueOf(Main.playerStats.getStat(player.getUniqueId(), statNames.HEALTH)) + " ❤")));
     }
 
 }

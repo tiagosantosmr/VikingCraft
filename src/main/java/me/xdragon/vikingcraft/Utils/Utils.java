@@ -1,6 +1,8 @@
 package me.xdragon.vikingcraft.Utils;
 
 import me.xdragon.vikingcraft.Main;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -25,6 +27,18 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    public static int findLoreIndexOfContains(List<Component> list, String s) {
+        if(list.size() == 0) return -1;
+        int i = 0;
+        for(Component el:list) {
+            TextComponent tc = (TextComponent) el;
+            if(tc.content().toLowerCase().contains(s.toLowerCase())){
+                return i;
+            }i++;
+        }
+        return -1;
     }
 
     public static int findIndexOfContains(List<String> list, String s) {
@@ -86,7 +100,7 @@ public class Utils {
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard scoreboard = manager.getNewScoreboard();
 
-        Objective objective = scoreboard.registerNewObjective("test", "dummy", "Player Stats");
+        Objective objective = scoreboard.registerNewObjective("test", "dummy", Component.text("Player Stats"));
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         Score s12 = objective.getScore(Utils.Chat("&6Armor- ") + String.valueOf(stats.get(statNames.ARMOR)));

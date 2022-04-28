@@ -1,6 +1,7 @@
 package me.xdragon.vikingcraft.Listeners;
 
 import me.xdragon.vikingcraft.Main;
+import me.xdragon.vikingcraft.Utils.Entities;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;

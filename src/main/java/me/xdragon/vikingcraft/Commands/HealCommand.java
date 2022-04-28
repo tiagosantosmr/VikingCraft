@@ -3,6 +3,7 @@ package me.xdragon.vikingcraft.Commands;
 import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.statNames;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,7 +30,14 @@ public class HealCommand implements CommandExecutor {
                 player.sendMessage(String.valueOf(Main.playerStats.getStat(player.getUniqueId(), statNames.XP)));
                 return true;
             }else if(args.length == 1) {
+                if(!sender.hasPermission("vikingcraft.admin")){
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have permission to use this command."));
+                    return true;
+                }
                 Player joao = Bukkit.getPlayer(args[0]);
+                if(joao == null){
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cPlayer not found."));
+                }
                 Main.playerStats.setStat(joao.getUniqueId(), statNames.HEALTH, Main.playerStats.getStat(joao.getUniqueId(), statNames.MAXHEALTH));
                 return true;
             }
