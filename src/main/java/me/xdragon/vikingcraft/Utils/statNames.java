@@ -1,7 +1,6 @@
 package me.xdragon.vikingcraft.Utils;
 
 public enum statNames {
-
     HEALTH,
     ATTACKDMG,
     MAGICDMG,
@@ -11,6 +10,6 @@ public enum statNames {
     MAGICRES,
     XP,
     MAXHEALTH,
-    HEALTHREGEN;
-
+    HEALTHREGEN,
+    BONUSHEALTH;
 }

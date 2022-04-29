@@ -3,6 +3,7 @@ package me.xdragon.vikingcraft;
 import me.xdragon.vikingcraft.Commands.*;
 import me.xdragon.vikingcraft.Listeners.*;
 import me.xdragon.vikingcraft.Utils.ActionBarTask;
+import me.xdragon.vikingcraft.Utils.HealthRegenTask;
 import me.xdragon.vikingcraft.Utils.PlayerStats;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,8 +16,10 @@ public final class Main extends JavaPlugin {
 
     public static PlayerStats playerStats = new PlayerStats();
 
-    public static final String noPermissions = ChatColor.translateAlternateColorCodes('&', "&cYou do not have pers");
+    public static final String noPermissions = ChatColor.translateAlternateColorCodes('&', "&cYou do not have perms");
     public static final String VCommands = "[&c&lViking&f&lCommands&f]&c- ";
+    public static final Double BASEFISTDAMAGE = 15.0d;
+    public static final Double BASEHEALTHREGEN = 2.0d;
 
     @Override
     public void onEnable() {
@@ -47,7 +50,8 @@ public final class Main extends JavaPlugin {
         registerCommands();
         registerListeners();
 
-        BukkitTask task = new ActionBarTask(this).runTaskTimer(this, 10, 40);
+        new ActionBarTask(this).runTaskTimer(this, 10, 40);
+        new HealthRegenTask(this).runTaskTimer(this, 10, 40);
     }
 
     @Override

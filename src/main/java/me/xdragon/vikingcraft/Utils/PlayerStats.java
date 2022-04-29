@@ -7,10 +7,9 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PlayerStats {
-
     private static Map<UUID, EnumMap<statNames, Double>> stats = new HashMap<>();
 
-    private static EnumMap<statNames, Double> defaultStats;
+    private static final EnumMap<statNames, Double> defaultStats;
 
     static {
         defaultStats = new EnumMap<>(statNames.class);
@@ -18,15 +17,16 @@ public class PlayerStats {
         defaultStats.put(statNames.ATTACKDMG, 10d);
         defaultStats.put(statNames.MAGICDMG, 0d);
         defaultStats.put(statNames.CRITCHANCE, 0.05d);
-        defaultStats.put(statNames.CRITDMG,1.5d);
+        defaultStats.put(statNames.CRITDMG,1.5d); //value should be 1 + bonusCritDamage
         defaultStats.put(statNames.ARMOR, 30d);
         defaultStats.put(statNames.MAGICRES, 10d);
         defaultStats.put(statNames.XP, 0d);
         defaultStats.put(statNames.MAXHEALTH, 100d);
-        defaultStats.put(statNames.HEALTHREGEN, 5.0d);
+        defaultStats.put(statNames.BONUSHEALTH, 0d);
+        defaultStats.put(statNames.HEALTHREGEN, 0.0d);
     }
 
-    private static Map<String, statNames> aux;
+    private static final Map<String, statNames> aux;
 
     static {
         aux = new HashMap<>();
@@ -40,6 +40,7 @@ public class PlayerStats {
         aux.put("xp", statNames.XP);
         aux.put("maxhealth", statNames.MAXHEALTH);
         aux.put("healthregen", statNames.HEALTHREGEN);
+        aux.put("bonushealth", statNames.BONUSHEALTH);
     }
 
     public void setStats(UUID uuid, EnumMap<statNames, Double> values) {//100 a funcionar
@@ -87,6 +88,10 @@ public class PlayerStats {
 
     public double xpToLvl(double xp) {
         return Math.floor((50 + Math.sqrt(8100 + 280 * xp)) / 140);
+    }
+
+    public double getMaxBonusHealth(UUID p){
+        return stats.get(p).get(statNames.MAXHEALTH) + stats.get(p).get(statNames.BONUSHEALTH);
     }
 
     public void saveFile(File f) {

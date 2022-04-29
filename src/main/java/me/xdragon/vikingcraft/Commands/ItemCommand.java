@@ -89,9 +89,9 @@ public class ItemCommand implements CommandExecutor {
                 System.out.println("ola1");
                 List<Component> lore = new ArrayList<Component>();
                 lore.add(Component.text(Utils.Chat("&b&lViking&6&lCraft")));
-                lore.add(Component.text(Utils.Chat("&cAttack Damage- " + args[2])));
-                lore.add(Component.text(Utils.Chat("&4Critical Damage- " + args[3] + "%")));
-                lore.add(Component.text(Utils.Chat("&4Critical Chance- " + args[4] + "%")));
+                lore.add(Component.text(Utils.Chat("&cAttack Damage: " + args[2])));
+                lore.add(Component.text(Utils.Chat("&4Critical Damage: " + args[3] + "%")));
+                lore.add(Component.text(Utils.Chat("&4Critical Chance: " + args[4] + "%")));
                 System.out.println("ola2");
                 NamespacedKey attackDamage = new NamespacedKey(plugin, "attackdmg");
                 NamespacedKey critdmg = new NamespacedKey(plugin, "critdmg");

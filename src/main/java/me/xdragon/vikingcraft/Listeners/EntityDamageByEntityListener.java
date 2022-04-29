@@ -4,7 +4,6 @@ import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
 import me.xdragon.vikingcraft.Utils.statNames;
 import me.xdragon.vikingcurrency.CurrencyManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,7 +37,9 @@ public class EntityDamageByEntityListener implements Listener {
             Player victim = (Player) e.getEntity();
             EnumMap<statNames, Double> victimStats = Main.playerStats.getStats(victim.getUniqueId());
             double armor = victimStats.get(statNames.ARMOR);
+            double magicres = victimStats.get(statNames.MAGICRES);
             armor = 100 / (100 + armor);
+            magicres = 100 / (100 + magicres);
             double health = victimStats.get(statNames.HEALTH);
             double damage = 0;
 
@@ -50,42 +51,34 @@ public class EntityDamageByEntityListener implements Listener {
                 if(attackerItem.getType() == Material.AIR && attackerItem.hasItemMeta() && !attackerItem.getItemMeta().getPersistentDataContainer().isEmpty()) {//se o item de ataque e valido
                     PersistentDataContainer container = attackerItem.getItemMeta().getPersistentDataContainer();
                     NamespacedKey keyattack = new NamespacedKey(plugin, "attackdmg");
-                    if(container.has(keyattack, PersistentDataType.DOUBLE)) { //vamos buscar as tags
+                    NamespacedKey keymagic = new NamespacedKey(plugin, "magicdmg");
+                    if(container.has(keyattack, PersistentDataType.DOUBLE)) { //if physical weapon
                         NamespacedKey keycritdmg = new NamespacedKey(plugin, "critdmg");
                         NamespacedKey keycritrate = new NamespacedKey(plugin, "critchance");
                         critdmg = container.get(keycritdmg, PersistentDataType.DOUBLE);
                         critrate = container.get(keycritrate, PersistentDataType.DOUBLE);
                         attackdmg = container.get(keyattack, PersistentDataType.DOUBLE);
+                        if(Utils.isCrit(attackerStats.get(statNames.CRITCHANCE) + critrate)) { //calculates basic attack damage
+                            damage = (attackerStats.get(statNames.ATTACKDMG) + attackdmg) * (attackerStats.get(statNames.CRITDMG) + critdmg) * 100 / (100 + victimStats.get(statNames.ARMOR));
+                        }else {
+                            damage = (attackerStats.get(statNames.ATTACKDMG) + attackdmg) * 100 / (100 + victimStats.get(statNames.ARMOR));
+                        }
+                        damage *= armor;
+                    }else if(container.has(keyattack, PersistentDataType.DOUBLE)){ //if magic weapon
+                        damage = container.get(keymagic, PersistentDataType.DOUBLE) * magicres;
+
+                    }
+                }else{ //if player weapon is fist or random object (can be changed later to fist-only to promote knuckle builds)
+                    attackdmg = Main.BASEFISTDAMAGE;
+                    if(Utils.isCrit(attackerStats.get(statNames.CRITCHANCE))) { //calculates basic attack damage
+                        damage = (attackerStats.get(statNames.ATTACKDMG) + attackdmg) * (attackerStats.get(statNames.CRITDMG));
+                    }else {
+                        damage = (attackerStats.get(statNames.ATTACKDMG) + attackdmg);
                     }
                 }
-                if(Utils.isCrit(attackerStats.get(statNames.CRITCHANCE) + critrate)) { //calculates basic attack damage
-                    damage = (attackerStats.get(statNames.ATTACKDMG) + attackdmg) * (attackerStats.get(statNames.CRITDMG) + critdmg) * 100 / (100 + victimStats.get(statNames.ARMOR));
-                }else {
-                    damage = (attackerStats.get(statNames.ATTACKDMG) + attackdmg) * 100 / (100 + victimStats.get(statNames.ARMOR));
-                }
-                damage *= armor;
-                if(health - damage <= 0) { //se a vitima morre
-                    CurrencyManager currency = new CurrencyManager();
-                    currency.removeCurrency(victim.getUniqueId(), 1000, false);
-                    currency.addCurrency(opp.getUniqueId(), 1000);
-                    victim.sendMessage(Utils.Chat("&cYou have been killed by") + opp.displayName() + "\n" + tag + "&4Hospital fees- 1000$");
-                    opp.sendMessage(tag + "&cYou have been awarded 1000$ for killing &b" + victim.displayName());
-                    final Vector vec = new Vector(0, 0, 0);
-                    victim.setVelocity(vec);
-                    victim.setFoodLevel(20);
-                    victim.setFireTicks(0);
-                    victim.setHealth(20.0d);
-                    Location loc = new Location(victim.getWorld(), -11.463d, 67.000d, -5.490d);
-                    victim.teleport(loc);
-                    victimStats.put(statNames.HEALTH, victimStats.get(statNames.MAXHEALTH));
-                    Main.playerStats.setStats(victim.getUniqueId(), victimStats);
-                    victim.sendActionBar(Component.text(Utils.Chat("&c" + Math.ceil(victimStats.get(statNames.MAXHEALTH))) + " ❤"));
-                    return;
-                }else {
-                    victimStats.put(statNames.HEALTH, health - damage);
-                    Main.playerStats.setStats(victim.getUniqueId(), victimStats);
-                    victim.sendActionBar(Component.text(Utils.Chat("&c" + Math.ceil(health - damage)) + " ❤"));
-                    return;
+
+                if(health - damage <= 0) { //se player mata player, manda mensagem no chat
+                    victim.sendMessage(Utils.Chat("&cYou have been killed by") + opp.displayName());
                 }
 
             }else if(e.getDamager() instanceof Zombie) { //se o atacante e zombie
@@ -100,19 +93,11 @@ public class EntityDamageByEntityListener implements Listener {
                     damage = skeleton.getPersistentDataContainer().get(damagekey, PersistentDataType.DOUBLE);
                 }
             }
-
-            //}else if(e.getDamager() instanceof Bomber) {
-            //Bomber attacker = (Bomber) e.getDamager();
-            //damage = attacker.attack() * 100 / (victimStats.get(statNames.ARMOR) + 100);
-            //}
             if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
                 damage *= 0.5;
             }
             damage *= armor;
             if(health - damage <= 0) { //se a vitima morre
-                CurrencyManager currency = new CurrencyManager();
-                currency.removeCurrency(victim.getUniqueId(), 1000, false);
-                victim.sendMessage(Utils.Chat(tag + "&Recovery fees- " + Math.max(currency.getCurrency(victim.getUniqueId()), 0)) + "$");
                 final Vector vec = new Vector(0, 0, 0);
                 victim.setVelocity(vec);
                 victim.setFoodLevel(20);
@@ -131,7 +116,7 @@ public class EntityDamageByEntityListener implements Listener {
             Double damage = 0.0d;
             int ammount = 0;
             Player attacker = null;
-            if(e.getDamager() instanceof Player) {
+            if(e.getDamager() instanceof Player) { //se quem ataca e player
                 attacker = (Player) e.getDamager();
                 EnumMap<statNames, Double> attackerStats = Main.playerStats.getStats(attacker.getUniqueId());
                 damage = attackerStats.get(statNames.ATTACKDMG);
@@ -147,6 +132,8 @@ public class EntityDamageByEntityListener implements Listener {
                         critrate += container.get(keycritrate, PersistentDataType.DOUBLE);
                         damage += container.get(keyattack, PersistentDataType.DOUBLE);
                     }
+                }else{ //if player weapon is fist or random object (can be changed later to fist-only to promote knuckle builds)
+                    damage = Main.BASEFISTDAMAGE;
                 }
                 if(Utils.isCrit(critrate)) { //calculates basic attack damage
                     damage = damage * critdmg;
@@ -155,14 +142,12 @@ public class EntityDamageByEntityListener implements Listener {
                 LivingEntity undead = (LivingEntity) e.getDamager();
                 NamespacedKey damagekey = new NamespacedKey(plugin, "damage");
                 damage = undead.getPersistentDataContainer().get(damagekey, PersistentDataType.DOUBLE);
-                ammount = 100;
             }else if(e.getDamager() instanceof Arrow) {
                 Arrow arrow = (Arrow) e.getDamager();
                 if(arrow.getShooter() instanceof Skeleton) { //this if gets checked
                     LivingEntity skeleton = (LivingEntity) arrow.getShooter();
                     NamespacedKey damagekey = new NamespacedKey(plugin, "damage");
                     damage = skeleton.getPersistentDataContainer().get(damagekey, PersistentDataType.DOUBLE);
-                    ammount = 200;
                 }
             }
             if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
