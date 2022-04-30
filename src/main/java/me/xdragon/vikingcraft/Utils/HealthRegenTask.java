@@ -18,13 +18,15 @@ public class HealthRegenTask extends BukkitRunnable {
     @Override
     public void run() {
         for(Player p: Bukkit.getOnlinePlayers()){ //regens the health of all the players
+            p.sendMessage(Main.playerStats.getStats(p.getUniqueId()).toString());
             Main.playerStats.setStat(p.getUniqueId(),
                     statNames.HEALTH,
                     Math.min(
                             Main.playerStats.getMaxBonusHealth(p.getUniqueId()),
-                            Main.playerStats.getStat(p.getUniqueId(), statNames.HEALTHREGEN) + Main.BASEHEALTHREGEN
+                            Main.playerStats.getStat(p.getUniqueId(), statNames.HEALTHREGEN) + Main.BASEHEALTHREGEN + Main.playerStats.getStat(p.getUniqueId(), statNames.HEALTH)
                     )
             );
+
         }
     }
 

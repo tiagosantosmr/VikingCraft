@@ -74,7 +74,7 @@ public class PlayerStats {
         try(BufferedReader br = new BufferedReader(new FileReader(f))) {
             for(String line; (line = br.readLine()) != null; ) {
                 split = line.split("\\s+");
-                for(int i = 1; i < 20; i += 2) {
+                for(int i = 1; i < defaultStats.keySet().size() * 2; i += 2) {
                     stat.put(aux.get(split[i]), Double.parseDouble(split[i + 1])); //vai buscar todos os stats do player
                 }
                 stats.put(UUID.fromString(split[0]), stat);

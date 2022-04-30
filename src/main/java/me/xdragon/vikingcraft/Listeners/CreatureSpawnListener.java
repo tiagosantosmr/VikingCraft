@@ -49,7 +49,7 @@ public class CreatureSpawnListener implements Listener {
                 Entities.newArachnid(spider, (dist + 1) * 60.0f, 190, (dist + 1) * 10, "&dArachnid " + colors2.get(Math.min(dist, 5)) + "lvl " + Integer.toString((dist + 1) * 10));
                 break;
             default:
-                break;
+                e.setCancelled(true);
         }
     }
 

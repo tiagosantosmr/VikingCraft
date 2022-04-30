@@ -24,9 +24,15 @@ public class ArmorEquipListener implements Listener {
 
     @EventHandler
     public void onArmorEquip(PlayerArmorChangeEvent e) {
+        e.getPlayer().sendMessage("ola");
 
         ItemStack oldPiece = e.getOldItem();
         ItemStack newPiece = e.getNewItem();
+
+        if(oldPiece == newPiece){
+            e.getPlayer().sendMessage("mesma armadura boa arde");
+            return;
+        }
 
         if(oldPiece == null || oldPiece.getType() == Material.AIR) {//se a antiga era vazia
             if(newPiece == null || newPiece.getType() == Material.AIR) {//se a nova era vazia
@@ -34,7 +40,7 @@ public class ArmorEquipListener implements Listener {
             }else { //se equipa armadura
                 Double armor = 0.0d, magicres = 0.0d, health = 0.0d;
                 NamespacedKey armorkey = new NamespacedKey(Main.getPlugin(Main.class), "armor");
-                if(newPiece.hasItemMeta() && !newPiece.getItemMeta().getPersistentDataContainer().isEmpty() && newPiece.getItemMeta().getPersistentDataContainer().has(armorkey, PersistentDataType.DOUBLE)) { //se e armadura valida
+                if(newPiece.hasItemMeta() && !newPiece.getItemMeta().getPersistentDataContainer().isEmpty() && newPiece.getItemMeta().getPersistentDataContainer().has(armorkey, PersistentDataType.DOUBLE)) { //se a nova e valida
                     NamespacedKey magicreskey = new NamespacedKey(Main.getPlugin(Main.class), "magicres");
                     NamespacedKey healthkey = new NamespacedKey(Main.getPlugin(Main.class), "health");
                     PersistentDataContainer container = newPiece.getItemMeta().getPersistentDataContainer();
@@ -48,7 +54,9 @@ public class ArmorEquipListener implements Listener {
                 stats = Main.playerStats.getStats(e.getPlayer().getUniqueId());
                 stats.put(statNames.ARMOR, stats.get(statNames.ARMOR) + armor);
                 stats.put(statNames.MAGICRES, stats.get(statNames.MAGICRES) + magicres);
-                stats.put(statNames.MAXHEALTH, stats.get(statNames.MAXHEALTH) + health);
+                stats.put(statNames.BONUSHEALTH, stats.get(statNames.BONUSHEALTH) + health);
+                stats.put(statNames.HEALTH, stats.get(statNames.HEALTH) + health);
+                System.out.println("antiga vazia nova valida");
                 Main.playerStats.setStats(e.getPlayer().getUniqueId(), stats);
                 Utils.updateScoreboard(e.getPlayer());
                 e.getPlayer().sendMessage(Main.playerStats.getStats(e.getPlayer().getUniqueId()).toString());
@@ -65,7 +73,7 @@ public class ArmorEquipListener implements Listener {
                 oldmagicres = container.get(magicreskey, PersistentDataType.DOUBLE);
                 oldhealth = container.get(healthkey, PersistentDataType.DOUBLE);
             }
-            if(newPiece != null && newPiece.getType() != Material.AIR) {
+            if(newPiece != null && newPiece.getType() != Material.AIR) { //se a nova for valida
                 if(newPiece.hasItemMeta() && !newPiece.getItemMeta().getPersistentDataContainer().isEmpty() && newPiece.getItemMeta().getPersistentDataContainer().has(armorkey, PersistentDataType.DOUBLE)) {
                     NamespacedKey magicreskey = new NamespacedKey(Main.getPlugin(Main.class), "magicres");
                     NamespacedKey healthkey = new NamespacedKey(Main.getPlugin(Main.class), "health");
@@ -79,11 +87,9 @@ public class ArmorEquipListener implements Listener {
             stats = Main.playerStats.getStats(e.getPlayer().getUniqueId());
             stats.put(statNames.ARMOR, stats.get(statNames.ARMOR) + newarmor - oldarmor);
             stats.put(statNames.MAGICRES, stats.get(statNames.MAGICRES) + newmagicres - oldmagicres);
-            stats.put(statNames.MAXHEALTH, stats.get(statNames.MAXHEALTH) + newhealth - oldhealth);
-            if(stats.get(statNames.HEALTH) > stats.get(statNames.MAXHEALTH)) {
-                stats.put(statNames.HEALTH, stats.get(statNames.MAXHEALTH));
-                e.getPlayer().sendActionBar(Component.text((Utils.Chat("&c" + String.valueOf(Math.ceil(stats.get(statNames.MAXHEALTH))) + " ❤"))));
-            }
+            stats.put(statNames.BONUSHEALTH, stats.get(statNames.BONUSHEALTH) + newhealth - oldhealth);
+            stats.put(statNames.HEALTH, stats.get(statNames.HEALTH) + newhealth - oldhealth);
+            System.out.println("antiga valida: health = " + String.valueOf(newhealth) + "-" + String.valueOf(oldhealth));
             Main.playerStats.setStats(e.getPlayer().getUniqueId(), stats);
             Utils.updateScoreboard(e.getPlayer());
         }

@@ -51,7 +51,7 @@ public final class Main extends JavaPlugin {
         registerListeners();
 
         new ActionBarTask(this).runTaskTimer(this, 10, 40);
-        new HealthRegenTask(this).runTaskTimer(this, 10, 40);
+        new HealthRegenTask(this).runTaskTimer(this, 10, 5);
     }
 
     @Override

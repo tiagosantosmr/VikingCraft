@@ -4,6 +4,7 @@ import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
 import me.xdragon.vikingcraft.Utils.statNames;
 import me.xdragon.vikingcurrency.CurrencyManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -111,6 +112,7 @@ public class EntityDamageByEntityListener implements Listener {
                 victimStats.put(statNames.HEALTH, health - damage);
                 Main.playerStats.setStats(victim.getUniqueId(), victimStats);
             }
+            victim.sendActionBar(Component.text(Utils.Chat("&c" + String.valueOf(Main.playerStats.getStat(victim.getUniqueId(), statNames.HEALTH)) + " ❤")));
         }else {//se quem recebe dano nao e player
             e.setDamage(0.0d);
             Double damage = 0.0d;
