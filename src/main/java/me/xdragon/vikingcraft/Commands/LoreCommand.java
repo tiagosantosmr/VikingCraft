@@ -2,6 +2,7 @@ package me.xdragon.vikingcraft.Commands;
 
 import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
+import me.xdragon.vikingutils.VikingUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -30,11 +31,11 @@ public class LoreCommand implements CommandExecutor {
             Player player = (Player) sender;
 
             if(player.getInventory().getItemInMainHand().getType() == Material.AIR) {
-                sender.sendMessage(Utils.Chat(Main.VCommands + "Nenhum item encontrado"));
+                sender.sendMessage(VikingUtils.chat(Main.VCommands + "Nenhum item encontrado"));
                 return false;
             }
             if(args.length == 0) { //nao ha argmentos
-                sender.sendMessage(Utils.Chat(Main.VCommands + "Usage: /lore <add/set/>"));
+                sender.sendMessage(VikingUtils.chat(Main.VCommands + "Usage: /lore <add/set/>"));
                 return false;
             }
             if(args[0].equalsIgnoreCase("add")) {
@@ -56,7 +57,7 @@ public class LoreCommand implements CommandExecutor {
                 for(int i = 1; i < args.length; i++) { // /lore add <1> <2> <3> ...
                     res += args[i] + " ";
                 }
-                lore.add(Component.text(Utils.Chat(res)));
+                lore.add(Component.text(VikingUtils.chat(res)));
                 meta.lore(lore);
                 item.setItemMeta(meta);
                 return true;
@@ -75,13 +76,13 @@ public class LoreCommand implements CommandExecutor {
                 for(int i = 1; i < args.length; i++) { // /lore set <1> <2> <3> ...
                     res += args[i] + " ";
                 }
-                lore.add(Component.text(Utils.Chat(res)));
+                lore.add(Component.text(VikingUtils.chat(res)));
                 meta.lore(lore);
                 item.setItemMeta(meta);
                 return true;
             }else if(args[0].equalsIgnoreCase("remove")) {
                 if(!player.getInventory().getItemInMainHand().getItemMeta().hasLore()) {
-                    sender.sendMessage(Utils.Chat(Main.VCommands + "Item ja se encontra sem lore."));
+                    sender.sendMessage(VikingUtils.chat(Main.VCommands + "Item ja se encontra sem lore."));
                     return false;
                 }
                 ItemStack item = player.getInventory().getItemInMainHand();
@@ -94,7 +95,7 @@ public class LoreCommand implements CommandExecutor {
                     return true;
                 }else {
                     if(args.length > 2) {
-                        sender.sendMessage(Utils.Chat(Main.VCommands + "/lore remove <int>"));
+                        sender.sendMessage(VikingUtils.chat(Main.VCommands + "/lore remove <int>"));
                         return true;
                     }
                     int valor;
@@ -102,11 +103,11 @@ public class LoreCommand implements CommandExecutor {
                         valor = Integer.parseInt(args[1]);
                         if(valor <= 0) throw new Exception();
                     }catch(Exception e){
-                        sender.sendMessage(Utils.Chat(Main.VCommands + "Indice invalido"));
+                        sender.sendMessage(VikingUtils.chat(Main.VCommands + "Indice invalido"));
                         return false;
                     }
                     if(valor > lore.size()) {
-                        sender.sendMessage(Utils.Chat(Main.VCommands + "Index invalido"));
+                        sender.sendMessage(VikingUtils.chat(Main.VCommands + "Index invalido"));
                         return false;
                     }else {
                         lore.remove(valor - 1);

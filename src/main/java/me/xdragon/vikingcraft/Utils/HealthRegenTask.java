@@ -1,7 +1,6 @@
 package me.xdragon.vikingcraft.Utils;
 
 import me.xdragon.vikingcraft.Main;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,7 +17,6 @@ public class HealthRegenTask extends BukkitRunnable {
     @Override
     public void run() {
         for(Player p: Bukkit.getOnlinePlayers()){ //regens the health of all the players
-            p.sendMessage(Main.playerStats.getStats(p.getUniqueId()).toString());
             Main.playerStats.setStat(p.getUniqueId(),
                     statNames.HEALTH,
                     Math.min(

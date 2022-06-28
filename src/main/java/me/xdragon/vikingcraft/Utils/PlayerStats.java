@@ -1,10 +1,7 @@
 package me.xdragon.vikingcraft.Utils;
 
 import java.io.*;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerStats {
     private static Map<UUID, EnumMap<statNames, Double>> stats = new HashMap<>();
@@ -70,10 +67,11 @@ public class PlayerStats {
 
     public void loadFile(File f) throws IOException {
         String split[];
-        EnumMap<statNames, Double> stat = new EnumMap<>(statNames.class);
+        EnumMap<statNames, Double> stat;
         try(BufferedReader br = new BufferedReader(new FileReader(f))) {
             for(String line; (line = br.readLine()) != null; ) {
                 split = line.split("\\s+");
+                stat = new EnumMap<>(statNames.class);
                 for(int i = 1; i < defaultStats.keySet().size() * 2; i += 2) {
                     stat.put(aux.get(split[i]), Double.parseDouble(split[i + 1])); //vai buscar todos os stats do player
                 }
@@ -83,7 +81,8 @@ public class PlayerStats {
     }
 
     public void addPlayer(UUID uuid) {
-        stats.put(uuid, defaultStats);
+        EnumMap<statNames, Double> ustats = new EnumMap<statNames, Double>(defaultStats);
+        stats.put(uuid, ustats);
     }
 
     public double xpToLvl(double xp) {
@@ -94,6 +93,10 @@ public class PlayerStats {
         return stats.get(p).get(statNames.MAXHEALTH) + stats.get(p).get(statNames.BONUSHEALTH);
     }
 
+    public boolean playerRegistered(UUID p){
+        return stats.containsKey(p);
+    }
+
     public void saveFile(File f) {
         FileWriter fileWriter;
         try {
@@ -102,9 +105,7 @@ public class PlayerStats {
             new FileWriter(f, false).close();
             for (Map.Entry<UUID, EnumMap<statNames, Double>> entry : stats.entrySet()) {
                 UUID uuid = entry.getKey();
-                EnumMap<statNames, Double> pstats = entry.getValue();
-                System.out.println(pstats);
-                printWriter.print(uuid.toString() + " " + Utils.statsToString(pstats).toLowerCase());
+                printWriter.print(uuid.toString() + " " + Utils.statsToString(entry.getValue()).toLowerCase() + "\n");
             }
             printWriter.close();
             fileWriter.close();

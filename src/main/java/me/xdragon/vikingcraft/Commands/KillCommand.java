@@ -2,6 +2,7 @@ package me.xdragon.vikingcraft.Commands;
 
 import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
+import me.xdragon.vikingutils.VikingUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,7 +30,7 @@ public class KillCommand implements CommandExecutor {
         if(sender.hasPermission("vikingcraft.admin") || !(sender instanceof Player)) {
             System.out.println("boa tarde1");
             if(args.length == 0) {
-                sender.sendMessage(Utils.Chat(tag + "/kill <all, custom, living, self>"));
+                sender.sendMessage(VikingUtils.chat(tag + "/kill <all, custom, living, self>"));
             }else if(args.length == 1) {
                 if(args[0].equalsIgnoreCase("custom")) {
                     for(Entity entity: Bukkit.getWorld("world").getEntities()) {
@@ -52,7 +53,7 @@ public class KillCommand implements CommandExecutor {
                     return true;
                 }else if(args[0].equalsIgnoreCase("self")) {
                     if(!(sender instanceof Player)) {
-                        sender.sendMessage(Utils.Chat(tag + "Sender not a valid player."));
+                        sender.sendMessage(VikingUtils.chat(tag + "Sender not a valid player."));
                         return false;
                     }
                     Player player = (Player)sender;

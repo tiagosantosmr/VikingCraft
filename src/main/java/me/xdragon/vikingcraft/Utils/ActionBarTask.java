@@ -1,6 +1,7 @@
 package me.xdragon.vikingcraft.Utils;
 
 import me.xdragon.vikingcraft.Main;
+import me.xdragon.vikingutils.VikingUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,7 +19,7 @@ public class ActionBarTask extends BukkitRunnable {
     @Override
     public void run() {
         for(Player p: Bukkit.getOnlinePlayers()){
-            p.sendActionBar(Component.text(Utils.Chat("&c" + String.valueOf(Main.playerStats.getStat(p.getUniqueId(), statNames.HEALTH)) + " ❤")));
+            p.sendActionBar(Component.text(VikingUtils.chat("&c" + String.valueOf(Main.playerStats.getStat(p.getUniqueId(), statNames.HEALTH)) + " ❤")));
         }
     }
 }

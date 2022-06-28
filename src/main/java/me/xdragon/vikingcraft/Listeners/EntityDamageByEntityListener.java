@@ -3,7 +3,7 @@ package me.xdragon.vikingcraft.Listeners;
 import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
 import me.xdragon.vikingcraft.Utils.statNames;
-import me.xdragon.vikingcurrency.CurrencyManager;
+import me.xdragon.vikingutils.VikingUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,7 +22,6 @@ import org.bukkit.util.Vector;
 import java.util.EnumMap;
 
 public class EntityDamageByEntityListener implements Listener {
-    String tag = "&a&l[Bank]&a: ";
 
     public EntityDamageByEntityListener(Main plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -79,7 +78,7 @@ public class EntityDamageByEntityListener implements Listener {
                 }
 
                 if(health - damage <= 0) { //se player mata player, manda mensagem no chat
-                    victim.sendMessage(Utils.Chat("&cYou have been killed by") + opp.displayName());
+                    victim.sendMessage(VikingUtils.chat("&cYou have been killed by") + opp.displayName());
                 }
 
             }else if(e.getDamager() instanceof Zombie) { //se o atacante e zombie
@@ -112,7 +111,7 @@ public class EntityDamageByEntityListener implements Listener {
                 victimStats.put(statNames.HEALTH, health - damage);
                 Main.playerStats.setStats(victim.getUniqueId(), victimStats);
             }
-            victim.sendActionBar(Component.text(Utils.Chat("&c" + String.valueOf(Main.playerStats.getStat(victim.getUniqueId(), statNames.HEALTH)) + " ❤")));
+            victim.sendActionBar(Component.text(VikingUtils.chat("&c" + String.valueOf(Main.playerStats.getStat(victim.getUniqueId(), statNames.HEALTH)) + " ❤")));
         }else {//se quem recebe dano nao e player
             e.setDamage(0.0d);
             Double damage = 0.0d;
@@ -186,14 +185,14 @@ public class EntityDamageByEntityListener implements Listener {
                         attacker.sendMessage(String.valueOf(Main.playerStats.getStat(attacker.getUniqueId(), statNames.XP)));
                         attacker.setLevel((int)Math.round(Math.log(Main.playerStats.getStat(attacker.getUniqueId(), statNames.XP))));
                     }
-                    CurrencyManager currency = new CurrencyManager();
-                    currency.addCurrency(attacker.getUniqueId(), ammount);
+                    //CurrencyManager currency = new CurrencyManager();
+                    //currency.addCurrency(attacker.getUniqueId(), ammount);
                 }
                 entity.setHealth(0.0d);
                 return;
             }
             container.set(healthkey, PersistentDataType.DOUBLE, healthvalue - damage);
-            entity.setCustomName(Utils.Chat(name + " &4" + Math.ceil(healthvalue - damage)));
+            entity.setCustomName(VikingUtils.chat(name + " &4" + Math.ceil(healthvalue - damage)));
         }
     }
 }

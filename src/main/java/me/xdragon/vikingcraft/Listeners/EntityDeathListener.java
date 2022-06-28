@@ -1,7 +1,6 @@
 package me.xdragon.vikingcraft.Listeners;
 
 import me.xdragon.vikingcraft.Main;
-import me.xdragon.vikingcurrency.CurrencyManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,20 +20,20 @@ public class EntityDeathListener implements Listener {
     public void onEntityDeath(EntityDeathEvent e) {
 
         if(e.getEntity().getKiller() instanceof Player) {
-            CurrencyManager currency = new CurrencyManager();
+            //CurrencyManager currency = new CurrencyManager();
             UUID p = e.getEntity().getKiller().getUniqueId();
             switch(e.getEntityType()) {
                 case COW:
-                    currency.addCurrency(p, 2);
+                    //currency.addCurrency(p, 2);
                     break;
                 case ZOMBIE:
-                    currency.addCurrency(p, 10);
+                    //currency.addCurrency(p, 10);
                     break;
                 case SKELETON:
-                    currency.addCurrency(p, 10);
+                    //currency.addCurrency(p, 10);
                     break;
                 case WITHER_SKELETON:
-                    currency.addCurrency(p, 1500);
+                    //currency.addCurrency(p, 1500);
                     break;
 
                 default:

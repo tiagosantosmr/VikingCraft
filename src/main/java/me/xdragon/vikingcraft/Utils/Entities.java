@@ -1,6 +1,7 @@
 package me.xdragon.vikingcraft.Utils;
 
 import me.xdragon.vikingcraft.Main;
+import me.xdragon.vikingutils.VikingUtils;
 import org.bukkit.Color;
 
 import org.bukkit.Material;
@@ -39,7 +40,7 @@ public class Entities{
         container.set(damagekey, PersistentDataType.DOUBLE, damage);
         container.set(typekey, PersistentDataType.STRING, "undead");
         container.set(levelkey, PersistentDataType.INTEGER, level);
-        zombie.setCustomName(Utils.Chat(name + " &4" + health));
+        zombie.setCustomName(VikingUtils.chat(name + " &4" + health));
         zombie.setCustomNameVisible(true);
     }
 
@@ -56,7 +57,7 @@ public class Entities{
         container.set(damagekey, PersistentDataType.DOUBLE, damage);
         container.set(typekey, PersistentDataType.STRING, "archer");
         container.set(levelkey, PersistentDataType.INTEGER, level);
-        skeleton.setCustomName(Utils.Chat(name + " &4" + health));
+        skeleton.setCustomName(VikingUtils.chat(name + " &4" + health));
         skeleton.setCustomNameVisible(true);
     }
 
@@ -73,7 +74,7 @@ public class Entities{
         container.set(damagekey, PersistentDataType.DOUBLE, damage);
         container.set(typekey, PersistentDataType.STRING, "bomber");
         container.set(levelkey, PersistentDataType.INTEGER, level);
-        creeper.setCustomName(Utils.Chat(name + " &4" + health));
+        creeper.setCustomName(VikingUtils.chat(name + " &4" + health));
         creeper.setCustomNameVisible(true);
     }
 
@@ -90,7 +91,7 @@ public class Entities{
         container.set(damagekey, PersistentDataType.DOUBLE, damage);
         container.set(typekey, PersistentDataType.STRING, "arachnid");
         container.set(levelkey, PersistentDataType.INTEGER, level);
-        spider.setCustomName(Utils.Chat(name + " &4" + health));
+        spider.setCustomName(VikingUtils.chat(name + " &4" + health));
         spider.setCustomNameVisible(true);
     }
 

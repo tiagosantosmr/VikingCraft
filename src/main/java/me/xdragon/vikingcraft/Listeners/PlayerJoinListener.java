@@ -3,6 +3,7 @@ package me.xdragon.vikingcraft.Listeners;
 import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
 import me.xdragon.vikingcraft.Utils.statNames;
+import me.xdragon.vikingutils.VikingUtils;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -28,6 +29,11 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
+
+        if(!Main.playerStats.playerRegistered(player.getUniqueId())) {
+            Main.playerStats.addPlayer(player.getUniqueId());
+        }
+
         double lyingHealth = 0;
         double lyingArmor = 0;
         double lyingMagicRes = 0;
@@ -48,11 +54,9 @@ public class PlayerJoinListener implements Listener {
         Main.playerStats.setStat(player.getUniqueId(), statNames.MAGICRES, Main.playerStats.getStat(player.getUniqueId(), statNames.MAGICRES) - lyingMagicRes);
 
 
-        if(!player.hasPlayedBefore()) {
-            Main.playerStats.addPlayer(player.getUniqueId());
-        }
+
         Utils.updateScoreboard(player);
-        player.sendActionBar(Component.text(Utils.Chat("&c" + String.valueOf(Main.playerStats.getStat(player.getUniqueId(), statNames.HEALTH)) + " ❤")));
+        player.sendActionBar(Component.text(VikingUtils.chat("&c" + String.valueOf(Main.playerStats.getStat(player.getUniqueId(), statNames.HEALTH)) + " ❤")));
     }
 
 }

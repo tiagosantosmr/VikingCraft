@@ -20,7 +20,7 @@ public class ContainerCommand implements CommandExecutor {
         plugin.getCommand("container").setExecutor(this);
     }
 
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) {
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(sender instanceof Player && sender.hasPermission("vikingcraft.admin")) {
 
             if(args.length == 1) {

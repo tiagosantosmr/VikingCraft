@@ -2,6 +2,7 @@ package me.xdragon.vikingcraft.Commands;
 
 import me.xdragon.vikingcraft.Main;
 import me.xdragon.vikingcraft.Utils.Utils;
+import me.xdragon.vikingutils.VikingUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -107,15 +108,15 @@ public class EnchantCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
         if(sender instanceof Player && sender.hasPermission("enchantperm"))
             if(args.length == 0) {
-                sender.sendMessage(Utils.Chat(tag + "&c/enchant <enchantment> <level>"));
+                sender.sendMessage(VikingUtils.chat(tag + "&c/enchant <enchantment> <level>"));
                 Player player = (Player) sender;
                 System.out.println(Main.playerStats.getStats(player.getUniqueId()));
                 return false;
             }else if(args.length == 1) {
-                sender.sendMessage(Utils.Chat(tag + "&c/enchant <enchantment> <level>"));
+                sender.sendMessage(VikingUtils.chat(tag + "&c/enchant <enchantment> <level>"));
             }else if(args.length == 2) {
                 if(((Player)sender).getInventory().getItemInMainHand().getType() == Material.AIR) {
-                    sender.sendMessage(Utils.Chat(tag + "&cYou must have an item in your hand to be able to use this command"));
+                    sender.sendMessage(VikingUtils.chat(tag + "&cYou must have an item in your hand to be able to use this command"));
                     return false;
                 }else { // se tem item na mao
                     try {
@@ -123,15 +124,15 @@ public class EnchantCommand implements CommandExecutor {
                         if (valor < 0) throw new Exception(); // se valor < 0, n e valido
                     }catch(Exception e){
                         e.printStackTrace();
-                        sender.sendMessage(Utils.Chat(tag + "&cNao e valido"));
+                        sender.sendMessage(VikingUtils.chat(tag + "&cNao e valido"));
                         return false;
                     }
                     if(encantamentos.get(args[0].toLowerCase()) != null) { //se args[0] e um encantamento valido
                         Player player = (Player) sender;
                         ItemStack item = player.getInventory().getItemInMainHand();
-                        if(!item.hasItemMeta() || !item.getItemMeta().lore().contains(Utils.Chat("&b&lViking&6&lCraft"))) {
+                        if(!item.hasItemMeta() || !item.getItemMeta().lore().contains(VikingUtils.chat("&b&lViking&6&lCraft"))) {
                             List<Component> lore = new ArrayList<Component>();
-                            lore.add(Component.text(Utils.Chat("&cVikingCraft")));
+                            lore.add(Component.text(VikingUtils.chat("&cVikingCraft")));
                             item.setItemMeta(null);
                             ItemMeta meta = item.getItemMeta();
                             meta.lore(lore);
@@ -152,16 +153,16 @@ public class EnchantCommand implements CommandExecutor {
                                 item.removeEnchantment(encantamentos.get(args[0].toLowerCase()));
                                 return true;
                             }
-                            lore.set(index, Component.text(Utils.Chat(nomes.get(args[0].toLowerCase()) + " " + Utils.toRoman(valor))));
+                            lore.set(index, Component.text(VikingUtils.chat(nomes.get(args[0].toLowerCase()) + " " + VikingUtils.toRoman(valor))));
                             meta.lore(lore);
                             item.setItemMeta(meta);
                             return true;
                         }else { //se nao tem encantamento
                             if(valor == 0) {
-                                sender.sendMessage(Utils.Chat(tag + "&cNao contem o encantamento"));
+                                sender.sendMessage(VikingUtils.chat(tag + "&cNao contem o encantamento"));
                                 return false;
                             }
-                            lore.add(Component.text(Utils.Chat(nomes.get(args[0].toLowerCase()) + " " + Utils.toRoman(valor))));
+                            lore.add(Component.text(VikingUtils.chat(nomes.get(args[0].toLowerCase()) + " " + VikingUtils.toRoman(valor))));
                             item.addUnsafeEnchantment(encantamentos.get(args[0].toLowerCase()), valor);
                             ItemMeta meta = item.getItemMeta();
                             meta.lore(lore);
@@ -169,7 +170,7 @@ public class EnchantCommand implements CommandExecutor {
                             return true;
                         }
                     }else { // se encantamento nao e valido
-                        sender.sendMessage(Utils.Chat(tag + "&cNao e valido"));
+                        sender.sendMessage(VikingUtils.chat(tag + "&cNao e valido"));
                         return false;
                     }
                 }

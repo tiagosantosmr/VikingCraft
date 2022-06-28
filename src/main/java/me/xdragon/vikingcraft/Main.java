@@ -7,7 +7,6 @@ import me.xdragon.vikingcraft.Utils.HealthRegenTask;
 import me.xdragon.vikingcraft.Utils.PlayerStats;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +23,12 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        File f = new File(this.getDataFolder().getParentFile().getAbsolutePath() + "\\VikingCraft");
+        File f = new File(this.getDataFolder().getParentFile().getAbsolutePath() + "/VikingCraft");
         boolean exists = true;
         if(!f.exists()) { //se nao existe plugins/VikingCraft
             f.mkdir();
         }
-        f = new File(this.getDataFolder().getParentFile().getAbsolutePath() + "\\VikingCraft\\playerStats.yml");
+        f = new File(this.getDataFolder().getParentFile().getAbsolutePath() + "/VikingCraft/playerStats.yml");
         if(!f.exists()) { //se nao existe plugins/VikingCraft/playerStats.yml
             try {
                 f.createNewFile();
@@ -51,13 +50,13 @@ public final class Main extends JavaPlugin {
         registerListeners();
 
         new ActionBarTask(this).runTaskTimer(this, 10, 40);
-        new HealthRegenTask(this).runTaskTimer(this, 10, 5);
+        new HealthRegenTask(this).runTaskTimer(this, 10, 20);
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        File f = new File(this.getDataFolder().getParentFile().getAbsolutePath() + "\\VikingCraft\\playerStats.yml");
+        File f = new File(this.getDataFolder().getParentFile().getAbsolutePath() + "/VikingCraft/playerStats.yml");
         playerStats.saveFile(f);
         System.out.println("VikingCraft- Player stats successfully saved to file");
     }
