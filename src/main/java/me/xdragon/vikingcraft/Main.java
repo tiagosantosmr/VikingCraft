@@ -73,7 +73,6 @@ public final class Main extends JavaPlugin {
 
     public void registerListeners() {
         new EntityDamageByEntityListener(this);
-        new EntityDeathListener(this);
         new CreatureSpawnListener(this);
         new PlayerJoinListener(this);
         new ArmorEquipListener(this);

@@ -106,7 +106,7 @@ public class EnchantCommand implements CommandExecutor {
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-        if(sender instanceof Player && sender.hasPermission("enchantperm"))
+        if(sender instanceof Player && sender.hasPermission("vikingcraft.adminenchant"))
             if(args.length == 0) {
                 sender.sendMessage(VikingUtils.chat(tag + "&c/enchant <enchantment> <level>"));
                 Player player = (Player) sender;

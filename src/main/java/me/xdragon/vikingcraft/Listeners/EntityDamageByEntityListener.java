@@ -48,7 +48,7 @@ public class EntityDamageByEntityListener implements Listener {
                 Player opp = (Player) e.getDamager();
                 EnumMap<statNames, Double> attackerStats = Main.playerStats.getStats(opp.getUniqueId());
                 ItemStack attackerItem = opp.getInventory().getItemInMainHand();
-                if(attackerItem.getType() == Material.AIR && attackerItem.hasItemMeta() && !attackerItem.getItemMeta().getPersistentDataContainer().isEmpty()) {//se o item de ataque e valido
+                if(attackerItem.getType() != Material.AIR && attackerItem.hasItemMeta() && !attackerItem.getItemMeta().getPersistentDataContainer().isEmpty()) {//se o item de ataque e valido
                     PersistentDataContainer container = attackerItem.getItemMeta().getPersistentDataContainer();
                     NamespacedKey keyattack = new NamespacedKey(plugin, "attackdmg");
                     NamespacedKey keymagic = new NamespacedKey(plugin, "magicdmg");
@@ -64,9 +64,8 @@ public class EntityDamageByEntityListener implements Listener {
                             damage = (attackerStats.get(statNames.ATTACKDMG) + attackdmg) * 100 / (100 + victimStats.get(statNames.ARMOR));
                         }
                         damage *= armor;
-                    }else if(container.has(keyattack, PersistentDataType.DOUBLE)){ //if magic weapon
+                    }else if(container.has(keymagic, PersistentDataType.DOUBLE)){ //if magic weapon
                         damage = container.get(keymagic, PersistentDataType.DOUBLE) * magicres;
-
                     }
                 }else{ //if player weapon is fist or random object (can be changed later to fist-only to promote knuckle builds)
                     attackdmg = Main.BASEFISTDAMAGE;
@@ -123,7 +122,7 @@ public class EntityDamageByEntityListener implements Listener {
                 damage = attackerStats.get(statNames.ATTACKDMG);
                 Double critdmg = attackerStats.get(statNames.CRITDMG), critrate = attackerStats.get(statNames.CRITCHANCE);
                 ItemStack weapon = attacker.getInventory().getItemInMainHand();
-                if(weapon.getType() == Material.AIR && weapon.hasItemMeta() && !weapon.getItemMeta().getPersistentDataContainer().isEmpty()) {//se for ataque valido
+                if(weapon.getType() != Material.AIR && weapon.hasItemMeta() && !weapon.getItemMeta().getPersistentDataContainer().isEmpty()) {//se for ataque valido
                     PersistentDataContainer container = weapon.getItemMeta().getPersistentDataContainer();
                     NamespacedKey keyattack = new NamespacedKey(plugin, "attackdmg");
                     if(container.has(keyattack, PersistentDataType.DOUBLE)) { //vamos buscar as tags
@@ -132,6 +131,7 @@ public class EntityDamageByEntityListener implements Listener {
                         critdmg += container.get(keycritdmg, PersistentDataType.DOUBLE);
                         critrate += container.get(keycritrate, PersistentDataType.DOUBLE);
                         damage += container.get(keyattack, PersistentDataType.DOUBLE);
+                        attacker.sendMessage("dmg: " + damage + " critdmg: " + critdmg + " critrate: " + critrate);
                     }
                 }else{ //if player weapon is fist or random object (can be changed later to fist-only to promote knuckle builds)
                     damage = Main.BASEFISTDAMAGE;
@@ -154,6 +154,7 @@ public class EntityDamageByEntityListener implements Listener {
             if(e.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK)) {
                 damage *= 0.5;
             }
+            attacker.sendMessage("finaldmg: " + damage);
             LivingEntity entity = (LivingEntity) e.getEntity();
             PersistentDataContainer container = entity.getPersistentDataContainer();
             NamespacedKey healthkey = new NamespacedKey(plugin, "health");

@@ -14,7 +14,7 @@ public class PlayerStats {
         defaultStats.put(statNames.ATTACKDMG, 10d);
         defaultStats.put(statNames.MAGICDMG, 0d);
         defaultStats.put(statNames.CRITCHANCE, 0.05d);
-        defaultStats.put(statNames.CRITDMG,1.5d); //value should be 1 + bonusCritDamage
+        defaultStats.put(statNames.CRITDMG, 1.5d); //value should be 1 + bonusCritDamage
         defaultStats.put(statNames.ARMOR, 30d);
         defaultStats.put(statNames.MAGICRES, 10d);
         defaultStats.put(statNames.XP, 0d);

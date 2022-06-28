@@ -28,12 +28,12 @@ public class CreatureSpawnListener implements Listener {
     public void onCreatureSpawn(CreatureSpawnEvent e) {
         Location loc = e.getLocation();
         int dist = (int) Math.floor((Math.sqrt(Math.pow(loc.getX(), 2) + Math.pow(loc.getZ(), 2)))/500);
-        if(e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)) return;
+        if(e.getSpawnReason().equals(CreatureSpawnEvent.SpawnReason.CUSTOM)) return; //no loops lol
         switch (e.getEntityType()) {
             case ZOMBIE:
                 LivingEntity zombie = (LivingEntity) e.getEntity();
                 float health = (dist + 1) * 80.0f;
-                Entities.newUndead(e.getEntity(), health, health/5, (dist + 1) * 10, "&5Undead " + colors2.get(Math.min(dist, 5)) + "lvl " + Integer.toString((dist + 1) * 10));
+                Entities.newUndead(zombie, health, health/5, (dist + 1) * 10, "&5Undead " + colors2.get(Math.min(dist, 5)) + "lvl " + Integer.toString((dist + 1) * 10));
                 Entities.setArmor(colors.get(Math.min(dist,  5)), zombie);
                 break;
             case SKELETON:
